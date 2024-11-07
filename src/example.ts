@@ -16,7 +16,6 @@ import {
     Hex,
     createPublicClient,
     zeroAddress,
-    parseAbi,
     parseEther,
     defineChain
 } from "viem"
@@ -31,13 +30,8 @@ if (
 ) {
     throw new Error("BUNDLER_RPC or PAYMASTER_RPC or PRIVATE_KEY is not set")
 }
-
-const BUNDLER_RPC =
-    "https://rpc.zerodev.app/api/v2/bundler/7e4d8287-74ea-416e-b986-02241a4b4bb4?provider=ZERODEV"
-const PAYMASTER_RPC =
-    "https://rpc.zerodev.app/api/v2/paymaster/7e4d8287-74ea-416e-b986-02241a4b4bb4?selfFunded=true&provider=ZERODEV"
-
 const usdeAddress = "0x426E7d03f9803Dd11cb8616C65b99a3c0AfeA6dE"
+
 const chain = defineChain({
     id: 52085143,
     name: "Ethena",
@@ -59,7 +53,7 @@ const chain = defineChain({
     }
 })
 const publicClient = createPublicClient({
-    transport: http(BUNDLER_RPC),
+    transport: http(process.env.BUNDLER_RPC),
     chain
 })
 
@@ -93,14 +87,14 @@ const main = async () => {
         const paymasterClient = createZeroDevPaymasterClient({
             chain,
             entryPoint,
-            transport: http(PAYMASTER_RPC)
+            transport: http(process.env.PAYMASTER_RPC)
         })
 
         const kernelClient = createKernelAccountClient({
             entryPoint,
             account,
             chain,
-            bundlerTransport: http(BUNDLER_RPC),
+            bundlerTransport: http(process.env.BUNDLER_RPC),
             middleware: {
                 sponsorUserOperation: async ({ userOperation }) => {
                     return paymasterClient.sponsorUserOperation({
