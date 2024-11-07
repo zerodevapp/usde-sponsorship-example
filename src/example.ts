@@ -131,11 +131,11 @@ const main = async () => {
         console.log("UserOp hash:", userOpHash)
 
         const bundlerClient = kernelClient.extend(bundlerActions(entryPoint))
-        await bundlerClient.waitForUserOperationReceipt({
+        const userOp = await bundlerClient.waitForUserOperationReceipt({
             hash: userOpHash,
             timeout: 1000000
         })
-
+        console.log(`https://explorer-ethena-testnet-0.t.conduit.xyz/tx/${userOp.receipt.transactionHash}`)
         console.log("UserOp completed")
     } else {
         console.log("Invalid action. Use 'getAddress' or 'sendTransaction'.");
